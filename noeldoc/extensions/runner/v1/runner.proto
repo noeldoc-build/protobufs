@@ -20,7 +20,7 @@ package noeldoc.extensions.runner.v1;
 import "google/protobuf/empty.proto";
 import "noeldoc/extensions/v1/types.proto";
 
-option go_package = "noeldoc.build/pkg/extensions/runner/pb";
+option go_package = "go.noeldoc.build/extensions-sdk-go/pkg/pb;pb";
 
 // `ExtensionRunner` is the main gRPC service that implements the Extensions Runner API.
 //

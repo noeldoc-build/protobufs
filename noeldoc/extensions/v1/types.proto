@@ -18,7 +18,7 @@ syntax = "proto3";
 package noeldoc.extensions.v1;
 
 option csharp_namespace = "Noelware.Noeldoc.Extensions.Protocol";
-option go_package = "go.noeldoc.build/extensions-sdk-go/pkg/pb";
+option go_package = "go.noeldoc.build/extensions-sdk-go/pkg/pb;pb";
 option java_multiple_files = true;
 option java_outer_classname = "TypesProto";
 option java_package = "build.noeldoc.extensions.protocol.v1";
