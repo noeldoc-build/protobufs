@@ -2,6 +2,7 @@
     "editor.tabSize": 4,
     "editor.formatOnSave": true,
     "[proto]": {
+        "editor.tabSize": 2,
         "editor.defaultFormatter": "bufbuild.vscode-buf"
     }
 }

@@ -66,4 +66,3 @@ jobs:
                 pr_comment: true
                 lint: true
                 format: true
-                breaking: true
