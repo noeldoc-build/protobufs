@@ -17,69 +17,69 @@ syntax = "proto3";
 
 package noeldoc.extensions.v1;
 
-option go_package = "go.noeldoc.build/extensions-sdk-go/pkg/types";
-option java_package = "build.noeldoc.extensions.protocol.v1";
-option java_outer_classname = "TypesProto";
-option java_multiple_files = true;
 option csharp_namespace = "Noelware.Noeldoc.Extensions.Protocol";
+option go_package = "go.noeldoc.build/extensions-sdk-go/pkg/pb";
+option java_multiple_files = true;
+option java_outer_classname = "TypesProto";
+option java_package = "build.noeldoc.extensions.protocol.v1";
 
 // Represents the datatype for a [`Option`]
 //
 // [`Option`]: https://docs.noeldoc.build/developers/generated/protobuf/latest/noeldoc.extensions.v1/Option
-enum StalarkType {
-    // Represents the truth or falsehood of a predicate.
-    BOOLEAN = 0;
+enum StarlarkType {
+  // Represents the truth or falsehood of a predicate.
+  BOOLEAN = 0;
 
-    // Integers may be positive or negative, and arbitrarily large.
-    //
-    // * Integer arithmetic is exact.
-    // * Integers are totally ordered; comparisons follow mathematical tradition.
-    INT = 1;
+  // Integers may be positive or negative, and arbitrarily large.
+  //
+  // * Integer arithmetic is exact.
+  // * Integers are totally ordered; comparisons follow mathematical tradition.
+  INT = 1;
 
-    /// Represents an IEEE 754 double-precision floating-point number.
-    FLOAT = 2;
+  /// Represents an IEEE 754 double-precision floating-point number.
+  FLOAT = 2;
 
-    // An immutable sequence of elements that encode Unicode text.
-    STRING = 3;
+  // An immutable sequence of elements that encode Unicode text.
+  STRING = 3;
 
-    // An immutable sequence of values in the range 0-255.
-    BYTES = 4;
+  // An immutable sequence of values in the range 0-255.
+  BYTES = 4;
 
-    // A mutable sequence of values.
-    LIST = 5;
+  // A mutable sequence of values.
+  LIST = 5;
 
-    // An immutable sequence of values.
-    TUPLE = 6;
+  // An immutable sequence of values.
+  TUPLE = 6;
 
-    // A mutable mapping from keys to values.
-    DICT = 7;
+  // A mutable mapping from keys to values.
+  DICT = 7;
 
-    // The `toolchain` Starlark type represents a function that provides toolchains for extensions.
-    //
-    // Noeldoc's toolchains feature allows to cache and re-use toolchains that extensions might require to
-    // run or function with. Noeldoc's toolchains feature supports using Nix derivations on Nix-based systems
-    // or systems that use the Nix package manager.
-    TOOLCHAIN = 8;
+  // The `toolchain` Starlark type represents a function that provides toolchains for extensions.
+  //
+  // Noeldoc's toolchains feature allows to cache and re-use toolchains that extensions might require to
+  // run or function with. Noeldoc's toolchains feature supports using Nix derivations on Nix-based systems
+  // or systems that use the Nix package manager.
+  TOOLCHAIN = 8;
 }
 
 message Option {
-    // The name of the option that will reflect in the Starlark configuration
-    string name = 1 ;
+  // The name of the option that will reflect in the Starlark configuration
+  string name = 1;
 
-    // Description about this option, mainly used for documentation purpose
-    // and intellisense with Noeldoc's LSP.
-    optional string description = 2;
+  // Description about this option, mainly used for documentation purpose
+  // and intellisense with Noeldoc's LSP.
+  optional string description = 2;
 
-    // whether if this option is required to be passed through.
-    bool required = 3;
+  // whether if this option is required to be passed through.
+  bool required = 3;
 
-    // whether if this option accepts `None` as a value to indicate the absense of a value. If
-    // this is marked `true` and the option isn't avaliable in `use_extension`, `None` is used
-    // as its value.
-    bool nullable = 4;
+  // whether if this option accepts `None` as a value to indicate the absense of a value. If
+  // this is marked `true` and the option isn't avaliable in `use_extension`, `None` is used
+  // as its value.
+  bool nullable = 4;
 
-    // Starlark type that this option represents.
-    noeldoc.extensions.v1.StarlarkType type = 5;
+  // Starlark type that this option represents.
+  noeldoc.extensions.v1.StarlarkType type = 5;
 }
 
 // `Registry` defines where an extension lives in. The registry HAS to support
@@ -94,83 +94,83 @@ message Option {
 // [Noeldoc HTTP Registry Specification]: https://docs.noeldoc.build/specs/registry
 // [noeldoc.extensions.v1.Manifest]: https://docs.noeldoc.build/developers/generated/protobuf/latest/noeldoc.extensions.v1/Manifest
 message Registry {
-    // URL that points to a registry living in the internet. This doesn't include
-    // the API version of the registry as the [`version`][noeldoc.extensions.Registry#version] field
-    // will do so.
-    string url = 1;
+  // URL that points to a registry living in the internet. This doesn't include
+  // the API version of the registry as the [`version`][noeldoc.extensions.Registry#version] field
+  // will do so.
+  string url = 1;
 
-    // Specification version that this registry supports. As of 01/07/24, there is
-    // only the version 1 specification.
-    uint32 version = 2;
+  // Specification version that this registry supports. As of 01/07/24, there is
+  // only the version 1 specification.
+  uint32 version = 2;
 }
 
 // `Manifest` is the metadata of an extension, it defines what this extension is
 // and supported options that can be passed through to the extension host.
 //
-// Since manifests live in the extension as a UTF-8 encoded byte string of the Stalark format,
+// Since manifests live in the extension as a UTF-8 encoded byte string of the Starlark format,
 // extension hosts can pull a `Manifest` without needing to create a HTTP request to the registry
 // where the extension lives at.
 message Manifest {
-    // Name of this extension. Names can only have alphanumeric characters, `-`, or `_` only.
-    string name = 1;
+  // Name of this extension. Names can only have alphanumeric characters, `-`, or `_` only.
+  string name = 1;
 
-    // SemVer version format of the extension.
-    string version = 2;
+  // SemVer version format of the extension.
+  string version = 2;
 
-    // Description about the extension, which on some frontends (like `registry.noeldoc.build`),
-    // it'll be avaliable to see what the extension is about.
-    optional string description = 3;
+  // Description about the extension, which on some frontends (like `registry.noeldoc.build`),
+  // it'll be avaliable to see what the extension is about.
+  optional string description = 3;
 
-    // Version requirement of the Noeldoc toolchain that this extension supports. By default,
-    // this will be `>={version}` where `{version}` is the toolchain version the extension
-    // was published from.
-    optional string noeldoc = 4;
+  // Version requirement of the Noeldoc toolchain that this extension supports. By default,
+  // this will be `>={version}` where `{version}` is the toolchain version the extension
+  // was published from.
+  optional string noeldoc = 4;
 
-    // List of authors that made this extension.
-    repeated string authors = 5;
+  // List of authors that made this extension.
+  repeated string authors = 5;
 
-    // whether if this extension can be published onto a registry.
-    bool publish = 6;
+  // whether if this extension can be published onto a registry.
+  bool publish = 6;
 
-    // [Registry] to where this extension lives in.
-    noeldoc.extensions.v1.Registry registry = 7;
+  // [Registry] to where this extension lives in.
+  noeldoc.extensions.v1.Registry registry = 7;
 
-    // List of capabilities that the extension supports.
-    noeldoc.extensions.v1.Manifest.Capabilities capabilities = 8;
+  // List of capabilities that the extension supports.
+  noeldoc.extensions.v1.Manifest.Capabilities capabilities = 8;
 
-    // Mapping of all the options that this extension supports.
-    map<string, noeldoc.extensions.v1.Option> options = 9;
+  // Mapping of all the options that this extension supports.
+  map<string, noeldoc.extensions.v1.Option> options = 9;
 
-    // Link to the source code for this extension.
-    optional string repository = 10;
+  // Link to the source code for this extension.
+  optional string repository = 10;
 
-    // Link to the issue tracker for this extension.
-    optional string bugs = 11;
+  // Link to the issue tracker for this extension.
+  optional string bugs = 11;
 
-    message Capabilities {
-        // If the extension supports running via the experimental Docker runner, this is where
-        // the toolchain can query the Docker image and client version to support via Docker's
-        // client negatation feature.
-        optional noeldoc.extensions.v1.Manifest.Capabilities.Docker docker = 1;
+  message Capabilities {
+    // If the extension supports running via the experimental Docker runner, this is where
+    // the toolchain can query the Docker image and client version to support via Docker's
+    // client negatation feature.
+    optional noeldoc.extensions.v1.Manifest.Capabilities.Docker docker = 1;
 
-        // Capabilities definition for the experimental Docker runner.
-        message Docker {
-            // Image that will be pulled for running the extension as a Docker container.
-            string image = 1;
+    // Capabilities definition for the experimental Docker runner.
+    message Docker {
+      // Image that will be pulled for running the extension as a Docker container.
+      string image = 1;
 
-            // Version requirement of what the Docker engine version that this Docker container
-            // supports. As of the release of Noeldoc, this can be set as `null` and it'll use
-            // the version requirement `>=1.24` as most containers don't require all the new features.
-            optional string client_version = 2;
-        }
+      // Version requirement of what the Docker engine version that this Docker container
+      // supports. As of the release of Noeldoc, this can be set as `null` and it'll use
+      // the version requirement `>=1.24` as most containers don't require all the new features.
+      optional string client_version = 2;
     }
+  }
 }
 
 // `OutputKind` is an enumeration that tells the extension how to output the schema.
 enum OutputKind {
-    // Places the extension data into the project's JSON metadata file.
-    JSON = 0;
+  // Places the extension data into the project's JSON metadata file.
+  JSON = 0;
 
-    // Emits a Markdown document from the extension data that was collected.
-    MARKDOWN = 1;
+  // Emits a Markdown document from the extension data that was collected.
+  MARKDOWN = 1;
 }

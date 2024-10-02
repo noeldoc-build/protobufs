@@ -15,9 +15,23 @@
 
 version: v2
 lint:
+  ignore: [.direnv]
   use:
     - STANDARD
-    - UNARY_RPC
+  except:
+    # For enums, it doesn't really make sense that they should have
+    # a prefix or suffix.
+    - ENUM_VALUE_PREFIX
+    - ENUM_ZERO_VALUE_SUFFIX
+
+    # same as above, I don't really care.
+    - RPC_REQUEST_STANDARD_NAME
+    - RPC_RESPONSE_STANDARD_NAME
+    - RPC_REQUEST_RESPONSE_UNIQUE
+
+    # We don't want to suffix `ExtensionHost`/`ExtensionRunner` as "services"
+    # as they're protocols that use gRPC and it doesn't sound right.
+    - SERVICE_SUFFIX
 breaking:
   use:
     - WIRE_JSON
