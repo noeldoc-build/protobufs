@@ -63,3 +63,7 @@ jobs:
               uses: bufbuild/buf-action@v1
               with:
                 github_token: ${{github.token}}
+                pr_comment: true
+                lint: true
+                format: true
+                breaking: true
