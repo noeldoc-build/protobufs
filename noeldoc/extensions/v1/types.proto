@@ -101,7 +101,7 @@ message Registry {
 
     // Specification version that this registry supports. As of 01/07/24, there is
     // only the version 1 specification.
-    uint32 version = 2
+    uint32 version = 2;
 }
 
 // `Manifest` is the metadata of an extension, it defines what this extension is
