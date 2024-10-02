@@ -1,0 +1,52 @@
+// 🐻‍❄️🍯 noeldoc/protobufs: Contains the Protocol Buffers files for Noeldoc systems
+// Copyright 2024 Noelware, LLC. <team@noelware.org>
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package noeldoc.extensions.runner.v1;
+
+option go_package = "noeldoc.build/pkg/extensions/runner/pb";
+
+import "noeldoc/extensions/v1/types.proto";
+import "google/protobuf/empty.proto";
+
+// `ExtensionRunner` is the main gRPC service that implements the Extensions Runner API.
+//
+// Runners allows to abstract how Noeldoc extensions are ran on the system. By default,
+// the local runner will run on the system but there is experimental support for using
+// a Docker container that mounts a UDS or Named Pipe on the system and it connects
+// in the container itself.
+//
+// The Docker runner runs in isolation of the system itself, it uses the [`cr.noelware.cloud/noeldoc/extension/runner:alpine`]
+// image on Unix and the [`cr.noelware.cloud/noeldoc/extension/runner:windows-nanoserver`] image on Windows.
+//
+// [`cr.noelware.cloud/noeldoc/extension/runner:alpine`]: https://cr.noelware.cloud/~/noeldoc/extension/runner/tags/alpine
+// [`cr.noelware.cloud/noeldoc/extension/runner:windows-nanoserver`]: https://cr.noelware.cloud/~/noeldoc/extension/runner/tags/windows-nanoserver
+service ExtensionRunner {
+    // The `Serve` gRPC endpoint will serve an extension.
+    rpc Serve(noeldoc.extensions.v1.Manifest) returns (noeldoc.extensions.runner.v1.Serve.Response);
+
+    // The `Kill` gRPC endpoint will kill the extension host.
+    rpc Kill(noeldoc.extensions.v1.Manifest) returns (google.protobuf.Empty);
+}
+
+// Namespace for the `Serve` gRPC endpoint contracts.
+message Serve {
+    // Response datatype for the `ExtensionRunner.Serve` gRPC request.
+    message Response {
+        // The path of the extension host that is running.
+        string path = 1;
+    }
+}

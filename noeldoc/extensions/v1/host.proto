@@ -1,0 +1,102 @@
+// 🐻‍❄️🍯 noeldoc/protobufs: Contains the Protocol Buffers files for Noeldoc systems
+// Copyright 2024 Noelware, LLC. <team@noelware.org>
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package noeldoc.extensions.v1;
+
+option go_package = "go.noeldoc.build/extensions-sdk-go/pkg/pb";
+option java_package = "build.noeldoc.extensions.protocol.v1";
+option java_outer_classname = "TypesProto";
+option java_multiple_files = true;
+option csharp_namespace = "Noelware.Noeldoc.Extensions.Protocol";
+
+import "noeldoc/extensions/v1/types.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/any.proto";
+
+// The `ExtensionHost` gRPC service defines the main protocol for Noeldoc Extensions.
+//
+// Extensions are served as gRPC services deployed locally on the host system or remotely via Unix domain sockets
+// on Unix systems or as a Named Pipe on Windows.
+//
+// ## Remote Extensions
+// Extensions can be hosted remotely from a [Extension Runner] that implements the [Extension Runner Protocol]
+// and can connect easily with or without authentication.
+//
+// [Extension Runner]: https://docs.noeldoc.build/concepts/extensions#extension-runner
+// [Extension Runner Protocol]: https://docs.noeldoc.build/concepts/extensions#protocol
+service ExtensionHost {
+    // RPC request that allows to configure the extension from the Noeldoc configuration file,
+    // all Starlark types are serialized into Protobuf values.
+    rpc Configure(google.protobuf.Struct) returns (google.protobuf.Empty);
+
+    // RPC request to query the extension manifest without querying the registry it came from.
+    rpc Manifest(google.protobuf.Empty) returns (noeldoc.extensions.v1.Manifest);
+
+    // RPC request to perform finalizations between the extension. For example,
+    // you can cleanup temporary data from the extension from this request.
+    rpc Cleanup(google.protobuf.Empty) returns (google.protobuf.Empty);
+
+    // RPC request to perform the actual schema that is returned.
+    //
+    // A `Perform.Request` is sent to determine how Noeldoc should process
+    // the data that the extension and allows transformation into whatever
+    // it can process.
+    //
+    // The response is a stream of [Perform.Response]s that the extension host will send over.
+    // If any errors are collected, then Noeldoc will abort the request and report the errors.
+    // If any content is collected, then it is merged together.
+    rpc Perform(Perform.Request) returns (stream Perform.Response);
+}
+
+// Namespace for the `ExtensionHost.Perform` gRPC request.
+message Perform {
+    // Request object.
+    message Request {
+        // Determines the output kind that will be emitted.
+        noeldoc.extensions.v1.OutputKind output = 1;
+    }
+
+    // Response object.
+    message Response {
+       // The result of the perform request. This can either be a full output
+       // or partial output.
+       optional bytes content = 1;
+
+       // If the [OutputKind] is NOT supposed to be in JSON, this is where Noeldoc
+       // will write the partial or full content in.
+       optional string to_path = 2;
+
+       // Whether if this response contains partial content. If so, then the client
+       // will keep receiving messages until `partial` is `false`.
+       bool partial = 3;
+
+       // If any errors occur, then this is where you report them.
+       repeated noeldoc.extensions.v1.Perform.Error errors = 4;
+    }
+
+    message Error {
+        // Representation of this error, the convention is to use `SCREAMING_SNAKE_CASE`.
+        string kind = 1;
+
+        // Humane message about this error.
+        string message = 2;
+
+        // Any contextual information that can be sent through.
+        optional google.protobuf.Any context = 3;
+    }
+}
